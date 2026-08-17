@@ -42,6 +42,10 @@ This is the governance problem in one sentence: **a brushed motor is a passive, 
 
 **2025–2026 — BSCRA Intro-class adoption and the scrutineering gap.** BSCRA's members voted to permit brushless motors in the Intro 32 class, mandating a specific motor (the Parma 3000kV) while leaving the eCom question comparatively open. This immediately exposed the gap this paper is about: a mandated, physically-inspectable motor paired with an eCom whose behavior is defined entirely by firmware that scrutineers have no standard way to verify quickly, non-destructively, at a race meeting.
 
+**2025 — MidAmerica Trixie 2, and one developer spanning the whole spectrum.** The same team behind Remora 1 and Remora 2 — AART — also designed the **MidAmerica Trixie 2**, a board built specifically for BSCRA's Genesis racing program. Where Remora is open, Trixie 2 is the opposite: **completely closed and single-sourced**, with the microcontroller fully locked at RDP Level 2 (see §7) and no published design files, firmware, or manufacturing route for anyone else to build one. AART has separately developed a comparable board for Slot.it — closed today, but designed with the explicit possibility of being open-sourced later.
+
+This matters for the standardization debate because it undercuts the assumption that "open" and "closed" map onto fixed ideological camps or competing companies. AART has, within a few years, shipped a fully open design (Remora 1), an open-manufacturing/licensed-commercial design (Remora 2), a fully closed single-source design built to a specific governing body's brief (Trixie 2), and a closed-but-potentially-opening design (the Slot.it board). The model tracks the commercial context of each engagement — a hobbyist community project, a licensed product line, a bespoke commission for a national body's control-part program — not a settled belief about which model is "correct." That is direct evidence for the position this paper takes in §6: **the standard should regulate behavior, not business model**, because even a single developer is demonstrably willing to work under any of them depending on who is asking and what they need.
+
 **The scrutineering proposal (this repository).** In parallel, a proposal (see `scrutineering.pdf` in this repository) for a trackside measurement device — a Hall-effect tachometer that measures unloaded motor speed at two or three fixed supply voltages to derive the motor/eCom combination's back-EMF constant, **Kₑ** — was put forward specifically to solve the "how do we scrutineer a black box quickly" problem without needing to read firmware at all. Its central insight is important enough to restate here: because eCom and motor winding resistance are small relative to total circuit resistance, and because **Kₑ = Kₜ** in consistent SI units, a simple speed-vs-voltage measurement is sufficient to catch an eCom/motor combination that is out of spec, regardless of what code is running inside it, or whether that code can be read at all. This is the technical key that makes the "closed firmware is fine as long as behavior is bounded and externally measurable" position workable rather than wishful — see §6.
 
 ---
@@ -50,13 +54,15 @@ This is the governance problem in one sentence: **a brushed motor is a passive, 
 
 It is tempting to frame this as open-source idealism versus corporate self-interest. That framing is wrong and will poison the working group's consensus-building if it takes hold. Every position in this space is a rational response to a real constraint.
 
-| | **Remora 1**<br>(fully open) | **Remora 2**<br>(open mfg. files + licensed commercial builds) | **SBM**<br>(closed hardware, semi-open firmware engagement) | **Latslot**<br>(fully closed) |
-|---|---|---|---|---|
-| Hardware design files | Full schematic + PCB source published | Gerbers/manufacturing files published; source files not | Proprietary, unpublished | Proprietary, unpublished |
-| Firmware | Open source (ESCape32) | Open source (ESCape32) | Closed; behavior/tuning discussed publicly by the designer | Closed, no public disclosure |
-| Who can build one | Anyone with a fab and the files | Anyone with a fab; commercial resale expects a license | Only the originating team / licensees | Only the manufacturer |
-| Independent audit possible | Yes, fully | Yes, board-level (matches Gerbers); firmware is open | No | No |
-| Revenue model | Voluntary royalty on commercial use; weak enforcement | Licensed commercial manufacture; stronger enforcement | Direct hardware sales, margin-funded | Direct hardware sales, margin-funded, IP as moat |
+| | **Remora 1**<br>(fully open) | **Remora 2**<br>(open mfg. files + licensed commercial builds) | **SBM**<br>(closed hardware, semi-open firmware engagement) | **Latslot**<br>(fully closed) | **Trixie 2**<br>(AART, fully closed, single-source) |
+|---|---|---|---|---|---|
+| Hardware design files | Full schematic + PCB source published | Gerbers/manufacturing files published; source files not | Proprietary, unpublished | Proprietary, unpublished | Proprietary, unpublished |
+| Firmware | Open source (ESCape32) | Open source (ESCape32) | Closed; behavior/tuning discussed publicly by the designer | Closed, no public disclosure | Closed, RDP Level 2 locked |
+| Who can build one | Anyone with a fab and the files | Anyone with a fab; commercial resale expects a license | Only the originating team / licensees | Only the manufacturer | Only AART, by commission |
+| Independent audit possible | Yes, fully | Yes, board-level (matches Gerbers); firmware is open | No | No | No |
+| Revenue model | Voluntary royalty on commercial use; weak enforcement | Licensed commercial manufacture; stronger enforcement | Direct hardware sales, margin-funded | Direct hardware sales, margin-funded, IP as moat | Commissioned single-source supply for a specific program (BSCRA/Genesis) |
+
+Notably, Remora 1/2 and Trixie 2 come from the same developer (AART) — see the history note above. The table is best read as a spectrum of *models one team is willing to build*, not a lineup of competing philosophies.
 
 ### Pros and cons of open designs
 
@@ -88,12 +94,13 @@ It is tempting to frame this as open-source idealism versus corporate self-inter
 
 ### Commercial viability and business models
 
-None of the four models above has a business model that is obviously sustainable at hobby-market volumes, and the working group should not pretend otherwise:
+None of the models above has a business model that is obviously sustainable at hobby-market volumes, and the working group should not pretend otherwise:
 
 - **Fully open (Remora 1)** relies on voluntary compliance with a royalty request that has no realistic enforcement mechanism against small-scale or overseas builders. It sustains itself on goodwill and the originators' willingness to keep contributing without being paid proportionally to the value created — a pattern familiar from open-source hardware generally, and one that tends to produce burnout rather than a durable supply of product.
 - **Open manufacturing files + licensed resale (Remora 2)** is a more conventional attempt at a sustainable model — closer to how, say, an open instruction-set architecture can still support licensed silicon vendors. It only works if the governing bodies are willing to give "properly licensed" builders some recognition (see §6) that unlicensed clones don't get, which is itself a policy choice this paper flags as needing consensus.
 - **Closed hardware, semi-open engagement (SBM)** monetizes through direct sales with the designer's expertise as the moat, and sustains itself the way any small specialist electronics business does — which is to say, it is only as durable as the business itself, with no fallback if Smits or the SBM team stop building.
 - **Fully closed (Latslot)** is the most conventional business model and, all else equal, the easiest to keep funded — but it offers racers and rule-makers the least insight into what they are actually racing.
+- **Commissioned single-source (Trixie 2)** sidesteps the open-market sustainability question entirely by tying the business model to a specific customer relationship — BSCRA/Genesis — rather than to retail sales. It is arguably the most commercially secure of the five for as long as that relationship holds, and the least resilient if it doesn't: there is, by design, no other supplier to fall back on.
 
 The uncomfortable conclusion the working group has to sit with: **the most commercially sustainable models are also the least independently verifiable ones**, and the most verifiable model is the least commercially sustainable one. Any standard that ignores this tension and simply mandates "must be open source" is likely to starve out the manufacturers who can actually deliver supported, warrantied product at race-meeting volumes. A standard that mandates "must be a specific closed product" solves supply and accountability but recreates a single-vendor monopoly and removes the community's ability to check anything.
 
@@ -130,7 +137,7 @@ This model explicitly protects both open and closed manufacturers' core interest
 
 ## 7. Practicalities of board locking (RDP levels 0–2) and what it means for scrutineering
 
-Several current and prospective boards (the discussion around locking a "Trixie"-class board is a live example) use STMicroelectronics-style microcontrollers, which support hardware **Readout Protection (RDP)** at the silicon level. This is worth explaining plainly, because the working group will otherwise talk past each other about what "locking the board" actually forecloses:
+Several current and prospective boards — the MidAmerica Trixie 2 (§3) is a live, concrete example, shipping today at RDP Level 2 — use STMicroelectronics-style microcontrollers, which support hardware **Readout Protection (RDP)** at the silicon level. This is worth explaining plainly, because the working group will otherwise talk past each other about what "locking the board" actually forecloses:
 
 - **RDP Level 0 — unprotected.** Full debug and flash-read access. Anyone with a $10 programmer can dump the firmware. This is effectively the same as fully open source at the object-code level (though not necessarily at the source/readable-code level) — it offers no commercial IP protection at all, but it is maximally scrutineerable and trivially cloneable.
 - **RDP Level 1 — reversible protection.** Flash read-out via the debug port is blocked while the protection is active. It *can* be reverted to Level 0, but doing so triggers a full mass-erase of flash as a side effect — so an attacker (or a scrutineer) can regain debug access, but only by destroying the very firmware they wanted to inspect. This is the pragmatic middle ground: it stops casual cloning and IP theft, while still leaving a manufacturer or a court-ordered inspection a path to *prove* what's on a specific unit, at the cost of that unit's firmware. It is compatible with an escrow-based dispute process (see below).
